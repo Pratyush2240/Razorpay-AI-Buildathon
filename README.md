@@ -24,8 +24,8 @@ GSTMatch employs a decoupled, modular architecture designed for high throughput,
 
 ```mermaid
 flowchart TD
-    A[Internal ERP Ledgers] --> C[Stage 1: Deterministic Engine]
-    B[GSTR-2B Portal Records] --> C
+    A[Internal ERP Ledgers & CSV Exports] --> B[Bulk Ingestion API / BullMQ Queue]
+    B --> C[Stage 1: Deterministic Engine]
     
     C -->|Exact Match: Invoice No + GSTIN + Amount| D[Resolved: Exact Match]
     C -->|Ambiguous Cases / Discrepancy Detected| E[Stage 2: Gemini LLM Engine]
@@ -46,7 +46,7 @@ flowchart TD
     K --> M
     L --> M
     
-    M --> N[Express REST API]
+    M --> N[Express REST API & SSE Stream]
     N --> O[React & Tailwind Analytics Dashboard]
 ```
 
@@ -60,7 +60,7 @@ Reconciliation mechanics are isolated from transactional source data using a thr
 
 ---
 
-## Two-Stage Reconciliation Pipeline
+## Reconciliation Engine & Async Queue Architecture
 
 ### Stage 1: Deterministic Matching Engine (Zero LLM Cost)
 
@@ -83,6 +83,13 @@ Stage 2 handles all records flagged as `needs_review` by Stage 1. It constructs 
 * **Rate Limiting & Backoff**: Features 4.5-second inter-request throttling and automatic HTTP 429 backoff handling.
 * **Persistent Disk Cache**: Implements `stage2_cache.json` to cache LLM classifications across runs, reducing redundant API execution time and preventing quota exhaustion.
 * **Graceful Degradation**: Network or API parsing errors safely default to `needs_manual_review` with a recorded exception trace, preventing database corruption or pipeline crashes.
+
+### Asynchronous Bulk Ingestion Queue (BullMQ + Redis)
+
+To handle large enterprise ledgers (50,000+ invoices) without triggering HTTP request timeouts:
+* **Immediate Non-Blocking Response**: The `POST /api/reconciliation/bulk` endpoint enqueues dataset payloads into a BullMQ queue backed by Redis, returning an immediate `202 Accepted` status code with a `jobId`.
+* **Graceful Fallback**: If a Redis instance is offline, the backend automatically fails over to an in-memory asynchronous worker pool, ensuring compatibility across all environments.
+* **Live SSE Telemetry**: Frontend clients connect to `/api/reconciliation/jobs/:jobId/stream` to receive real-time job progress percentages (0% to 100%) and stage updates.
 
 ---
 
@@ -119,6 +126,7 @@ The pipeline was evaluated against an 80-scenario benchmark suite covering stand
 ### Backend
 * **Runtime**: Node.js (v18+), TypeScript
 * **API Framework**: Express.js
+* **Async Job Queue**: BullMQ, ioredis (with in-memory fallback)
 * **Database & ORM**: PostgreSQL, Prisma ORM
 * **AI & LLM Integration**: `@google/genai` SDK (Google Gemini API)
 * **Algorithms**: Custom Levenshtein distance algorithm, relative variance calculators
@@ -141,6 +149,8 @@ The pipeline was evaluated against an 80-scenario benchmark suite covering stand
 │   │   └── seed.ts               # Synthetic 80-scenario benchmark generator
 │   ├── src/
 │   │   ├── index.ts              # Express API server entry point
+│   │   ├── queue/
+│   │   │   └── reconciliationQueue.ts # BullMQ + Redis job queue manager
 │   │   └── matching/
 │   │       ├── stage1.ts         # Deterministic matching engine
 │   │       ├── stage2.ts         # Gemini LLM reasoning classifier
@@ -169,6 +179,7 @@ The pipeline was evaluated against an 80-scenario benchmark suite covering stand
 ### Prerequisites
 * Node.js (v18.0.0 or higher)
 * PostgreSQL database instance
+* Redis instance (optional, for BullMQ worker queue)
 * Google Gemini API Key
 
 ### 1. Repository Setup
@@ -187,6 +198,7 @@ Configure environment variables in `backend/.env`:
 ```env
 PORT=5000
 DATABASE_URL="postgresql://user:password@localhost:5432/gstmatch?schema=public"
+REDIS_URL="redis://localhost:6379"
 GEMINI_API_KEY="your_google_gemini_api_key_here"
 ```
 
@@ -231,9 +243,12 @@ This will output benchmark metrics to the console and update `backend/eval-resul
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/reconciliation/run` | POST | Triggers the complete two-stage reconciliation pipeline |
+| `/api/reconciliation/bulk` | POST | Asynchronously enqueues a bulk dataset matching job (HTTP 202 Accepted) |
+| `/api/reconciliation/jobs/:jobId` | GET | Checks status and progress of a background queue job |
+| `/api/reconciliation/jobs/:jobId/stream` | GET | Real-time SSE event stream for live job progress monitoring |
 | `/api/reconciliation/results` | GET | Retrieves current reconciliation records and summary metrics |
-| `/api/chat` | POST | Handles interactive AI Copilot queries for invoice audit assistance |
-| `/api/upload` | POST | Accepts CSV ledger and portal file uploads for batch processing |
+| `/api/chat/explain` | POST | Handles interactive AI Copilot queries for invoice audit assistance |
+| `/api/reconciliation/upload` | POST | Accepts CSV ledger and portal file uploads for processing |
 
 ---
 
