@@ -11,6 +11,8 @@ The system utilizes a hybrid two-stage architecture: front-loading deterministic
 * **Overall Benchmark Accuracy**: 100.0% across 80 controlled test scenarios.
 * **Manual Review Fallback Rate**: 0.0% (zero manual interventions required).
 * **Deterministic Stage Speed**: ~19 ms execution time for 50% of total invoice volume.
+* **Async Bulk Job Queue**: BullMQ & Redis worker queue with in-memory fallback for high-volume dataset processing (50,000+ invoices).
+* **Real-Time Telemetry**: Server-Sent Events (SSE) streaming live job progress percentages to the frontend.
 * **Discrepancy Coverage**: Full resolution across 5 distinct categories (`exact_match`, `amount_mismatch`, `missing_on_portal`, `duplicate`, `gstin_mismatch`).
 * **Evaluation Output**: Automatic export of machine-readable `eval-results.json` and human-auditable `eval-report.md`.
 

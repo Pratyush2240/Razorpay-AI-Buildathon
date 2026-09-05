@@ -10,6 +10,11 @@ import {
   updateRecordReviewStatus,
 } from './matching/reconciliationService';
 import { explainExceptionWithGemini } from './matching/chatService';
+import {
+  addBulkReconciliationJob,
+  getJobProgress,
+  subscribeJobProgressStream,
+} from './queue/reconciliationQueue';
 
 dotenv.config();
 
@@ -104,6 +109,39 @@ app.post('/api/reconciliation/upload', async (req: Request, res: Response) => {
     console.error('Error uploading custom reconciliation data:', error);
     res.status(500).json({ error: error?.message || 'Failed to upload and process custom dataset' });
   }
+});
+
+// POST /api/reconciliation/bulk — Async background queue bulk ingestion (HTTP 202 Accepted)
+app.post('/api/reconciliation/bulk', async (req: Request, res: Response) => {
+  try {
+    const { internalInvoices, portalRecords } = req.body;
+    if (!Array.isArray(internalInvoices) || !Array.isArray(portalRecords)) {
+      return res.status(400).json({ error: 'Payload must contain internalInvoices and portalRecords arrays' });
+    }
+
+    const jobInfo = await addBulkReconciliationJob(prisma, { internalInvoices, portalRecords });
+    res.status(202).json({
+      message: `Enqueued bulk reconciliation job for ${internalInvoices.length} internal invoices & ${portalRecords.length} portal records.`,
+      ...jobInfo,
+    });
+  } catch (error: any) {
+    console.error('Error enqueuing bulk job:', error);
+    res.status(500).json({ error: error?.message || 'Failed to enqueue bulk reconciliation job' });
+  }
+});
+
+// GET /api/reconciliation/jobs/:jobId — Check background job status
+app.get('/api/reconciliation/jobs/:jobId', (req: Request, res: Response) => {
+  const progress = getJobProgress(req.params.jobId);
+  if (!progress) {
+    return res.status(404).json({ error: 'Job not found' });
+  }
+  res.json(progress);
+});
+
+// GET /api/reconciliation/jobs/:jobId/stream — Real-time SSE telemetry for background job
+app.get('/api/reconciliation/jobs/:jobId/stream', (req: Request, res: Response) => {
+  subscribeJobProgressStream(req.params.jobId, res);
 });
 
 // POST /api/chat/explain — Interactive Gemini AI Financial Copilot chat

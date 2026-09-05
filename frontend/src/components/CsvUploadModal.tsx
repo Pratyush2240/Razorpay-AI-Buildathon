@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReconciliationResponse } from '../types';
 
 interface CsvUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUploadSuccess: (data: ReconciliationResponse) => void;
+}
+
+interface JobStatus {
+  jobId: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  stage: string;
+  processedCount: number;
+  totalCount: number;
+  error?: string;
+  result?: ReconciliationResponse;
 }
 
 const SAMPLE_INTERNAL_CSV = `invoiceNumber,vendorName,vendorGstin,amount,taxAmount,invoiceDate,description
@@ -29,6 +40,47 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
   const [portalCsvText, setPortalCsvText] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Background Job Progress State
+  const [activeJob, setActiveJob] = useState<JobStatus | null>(null);
+
+  useEffect(() => {
+    if (!activeJob?.jobId || activeJob.status === 'completed' || activeJob.status === 'failed') {
+      return;
+    }
+
+    const eventSource = new EventSource(
+      `http://localhost:5000/api/reconciliation/jobs/${activeJob.jobId}/stream`
+    );
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data: JobStatus = JSON.parse(event.data);
+        setActiveJob(data);
+
+        if (data.status === 'completed' && data.result) {
+          onUploadSuccess(data.result);
+          setLoading(false);
+          eventSource.close();
+        } else if (data.status === 'failed') {
+          setError(data.error || 'Job failed');
+          setLoading(false);
+          eventSource.close();
+        }
+      } catch (err) {
+        console.error('Error parsing SSE job telemetry event:', err);
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.warn('SSE stream closed or disconnected:', err);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [activeJob?.jobId, activeJob?.status, onUploadSuccess]);
 
   if (!isOpen) return null;
 
@@ -70,6 +122,7 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setActiveJob(null);
 
     if (!internalCsvText.trim() || !portalCsvText.trim()) {
       setError('Please provide CSV data for both Internal Invoices and GSTR-2B Portal Records.');
@@ -85,7 +138,8 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
         throw new Error('CSV parsing failed. Ensure header rows and comma separators are correct.');
       }
 
-      const res = await fetch('http://localhost:5000/api/reconciliation/upload', {
+      // Enqueue bulk job asynchronously (HTTP 202 Accepted)
+      const res = await fetch('http://localhost:5000/api/reconciliation/bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ internalInvoices, portalRecords }),
@@ -96,13 +150,18 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
         throw new Error(errData.error || 'Upload failed');
       }
 
-      const data: ReconciliationResponse = await res.json();
-      onUploadSuccess(data);
-      onClose();
+      const jobData = await res.json();
+      setActiveJob({
+        jobId: jobData.jobId,
+        status: 'queued',
+        progress: 5,
+        stage: 'queued',
+        processedCount: 0,
+        totalCount: internalInvoices.length + portalRecords.length,
+      });
     } catch (err: any) {
-      console.error('Error uploading CSV dataset:', err);
-      setError(err?.message || 'Failed to upload and process custom dataset.');
-    } finally {
+      console.error('Error submitting bulk reconciliation job:', err);
+      setError(err?.message || 'Failed to submit bulk reconciliation job.');
       setLoading(false);
     }
   };
@@ -118,16 +177,17 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
             </span>
             <div>
               <h2 className="text-lg font-bold font-serif text-[#1E293B]">
-                Upload Reconciliation Dataset (CSV / Excel)
+                Upload Reconciliation Dataset (Bulk CSV Queue)
               </h2>
               <p className="text-xs text-[#64748B]">
-                Run the matching pipeline against your custom ERP books and GSTR-2B portal exports
+                Process large enterprise ledgers asynchronously via BullMQ / Redis worker queue
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#64748B] hover:text-[#1E293B] p-1 rounded hover:bg-[#E5DFD3]/40"
+            disabled={loading}
+            className="text-[#64748B] hover:text-[#1E293B] p-1 rounded hover:bg-[#E5DFD3]/40 disabled:opacity-30"
           >
             <span className="material-symbols-outlined text-lg">close</span>
           </button>
@@ -141,12 +201,40 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
             </div>
           )}
 
+          {/* Active Job Progress Bar */}
+          {activeJob && (
+            <div className="bg-[#F0FDF4] border border-[#86EFAC] p-4 rounded-lg space-y-2">
+              <div className="flex justify-between items-center text-xs font-semibold text-[#166534]">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm animate-spin">sync</span>
+                  <span>
+                    Queue Job #{activeJob.jobId} &bull; Stage: {activeJob.stage.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <span>{activeJob.progress}%</span>
+              </div>
+              <div className="w-full bg-[#DCFCE7] rounded-full h-2 overflow-hidden border border-[#86EFAC]">
+                <div
+                  className="bg-[#166534] h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${activeJob.progress}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] text-[#15803D]">
+                <span>Status: {activeJob.status.toUpperCase()}</span>
+                <span>
+                  Items Processed: {activeJob.processedCount} / {activeJob.totalCount}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-between items-center bg-[#F2ECDC]/60 border border-[#E5DFD3] p-3 rounded-lg text-xs">
             <span className="text-[#334155]">Want to test custom data instantly?</span>
             <button
               type="button"
               onClick={handleLoadSample}
-              className="bg-[#166534] hover:bg-[#004c22] text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1 transition-colors"
+              disabled={loading}
+              className="bg-[#166534] hover:bg-[#004c22] text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1 transition-colors disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-sm">auto_fix_high</span>
               <span>Load Sample CSV Pair</span>
@@ -161,10 +249,11 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
               </label>
               <textarea
                 rows={8}
+                disabled={loading}
                 value={internalCsvText}
                 onChange={(e) => setInternalCsvText(e.target.value)}
                 placeholder="invoiceNumber,vendorName,vendorGstin,amount,taxAmount,invoiceDate,description..."
-                className="w-full bg-[#FFFFFF] border border-[#E5DFD3] rounded p-3 text-xs font-mono focus:outline-none focus:border-[#166534] text-[#1E293B] leading-relaxed shadow-inner"
+                className="w-full bg-[#FFFFFF] border border-[#E5DFD3] rounded p-3 text-xs font-mono focus:outline-none focus:border-[#166534] text-[#1E293B] leading-relaxed shadow-inner disabled:opacity-50"
               />
               <span className="text-[10px] text-[#64748B] block mt-1">
                 Headers: invoiceNumber, vendorName, vendorGstin, amount, taxAmount, invoiceDate, description
@@ -178,10 +267,11 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
               </label>
               <textarea
                 rows={8}
+                disabled={loading}
                 value={portalCsvText}
                 onChange={(e) => setPortalCsvText(e.target.value)}
                 placeholder="invoiceNumber,vendorName,vendorGstin,amount,taxAmount,filedDate..."
-                className="w-full bg-[#FFFFFF] border border-[#E5DFD3] rounded p-3 text-xs font-mono focus:outline-none focus:border-[#166534] text-[#1E293B] leading-relaxed shadow-inner"
+                className="w-full bg-[#FFFFFF] border border-[#E5DFD3] rounded p-3 text-xs font-mono focus:outline-none focus:border-[#166534] text-[#1E293B] leading-relaxed shadow-inner disabled:opacity-50"
               />
               <span className="text-[10px] text-[#64748B] block mt-1">
                 Headers: invoiceNumber, vendorName, vendorGstin, amount, taxAmount, filedDate
@@ -194,7 +284,8 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="text-xs text-[#64748B] hover:text-[#1E293B] font-semibold"
+              disabled={loading}
+              className="text-xs text-[#64748B] hover:text-[#1E293B] font-semibold disabled:opacity-50"
             >
               Cancel
             </button>
@@ -206,7 +297,7 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
               <span className="material-symbols-outlined text-base">
                 {loading ? 'sync' : 'rocket_launch'}
               </span>
-              <span>{loading ? 'Processing Dataset & Running Pipeline...' : 'Process Dataset & Run Pipeline'}</span>
+              <span>{loading ? 'Enqueueing Async Queue Job...' : 'Enqueue Bulk Job & Run Pipeline'}</span>
             </button>
           </div>
         </form>
