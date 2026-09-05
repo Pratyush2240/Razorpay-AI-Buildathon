@@ -1,0 +1,324 @@
+{
+  "e685c214-0441-47ce-a9e9-08d31e2b560e": {
+    "internalInvoiceId": "e685c214-0441-47ce-a9e9-08d31e2b560e",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but the total amount and tax values differ between the internal invoice and the portal record.",
+    "fromCache": false
+  },
+  "0016a1d1-d5c5-43d0-b4e3-0f1b606960d1": {
+    "internalInvoiceId": "0016a1d1-d5c5-43d0-b4e3-0f1b606960d1",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but the portal amount of ₹125,494.62 differs from the internal invoice amount of ₹123,717.29.",
+    "fromCache": false
+  },
+  "28e3270b-597f-4408-90c9-93b0309d900e": {
+    "internalInvoiceId": "28e3270b-597f-4408-90c9-93b0309d900e",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but the internal invoice amount of ₹299,878.47 differs from the portal reported amount of ₹285,918.91.",
+    "fromCache": false
+  },
+  "092e689f-1180-4acb-ba4a-7e606fc655af": {
+    "internalInvoiceId": "092e689f-1180-4acb-ba4a-7e606fc655af",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match perfectly, but the total amount on the portal (₹182,788.40) differs from the internal invoice amount (₹176,510.02).",
+    "fromCache": false
+  },
+  "005d62ed-0049-4bf5-9260-70fdd01cafdc": {
+    "internalInvoiceId": "005d62ed-0049-4bf5-9260-70fdd01cafdc",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match perfectly, but there is a discrepancy between the internal invoice amount of ₹166,681.83 and the portal record amount of ₹164,464.87.",
+    "fromCache": false
+  },
+  "cf20bde5-624a-43f2-9a8f-1546cbbd1df7": {
+    "internalInvoiceId": "cf20bde5-624a-43f2-9a8f-1546cbbd1df7",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match perfectly, but the internal invoice amount of ₹50936.33 differs from the portal record amount of ₹49713.91.",
+    "fromCache": false
+  },
+  "2ff08f57-25ca-44a8-a2cf-8c685f621f4f": {
+    "internalInvoiceId": "2ff08f57-25ca-44a8-a2cf-8c685f621f4f",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but there is a discrepancy in the total amount and tax values.",
+    "fromCache": false
+  },
+  "25ec7341-3c7c-4879-b74d-454f0e5dec9f": {
+    "internalInvoiceId": "25ec7341-3c7c-4879-b74d-454f0e5dec9f",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but the total amount and tax values differ between the internal invoice and the portal filing.",
+    "fromCache": false
+  },
+  "99fcef63-51c3-4f5a-ac55-892d103a6d5a": {
+    "internalInvoiceId": "99fcef63-51c3-4f5a-ac55-892d103a6d5a",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record exactly, but the total amount and tax values differ.",
+    "fromCache": false
+  },
+  "6dade860-c3f9-44d5-aed1-37e496fa211a": {
+    "internalInvoiceId": "6dade860-c3f9-44d5-aed1-37e496fa211a",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match perfectly, but the total amount on the portal (₹241,710.12) differs from the internal invoice amount (₹232,608.66).",
+    "fromCache": false
+  },
+  "bc6c3f5f-2fd3-4ec5-ba3c-ddc681526763": {
+    "internalInvoiceId": "bc6c3f5f-2fd3-4ec5-ba3c-ddc681526763",
+    "category": "amount_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and vendor GSTIN match perfectly, but the internal invoice amount of ₹272,918.54 differs from the portal record amount of ₹285,517.58.",
+    "fromCache": false
+  },
+  "0437a4ee-2964-4422-b87c-6a07b9ec36d1": {
+    "internalInvoiceId": "0437a4ee-2964-4422-b87c-6a07b9ec36d1",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for the invoice number on the GSTR-2B portal, indicating the vendor has not filed this invoice.",
+    "fromCache": false
+  },
+  "9afa7b7f-5c5f-4381-bf9d-fc857e444cd0": {
+    "internalInvoiceId": "9afa7b7f-5c5f-4381-bf9d-fc857e444cd0",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for invoice BILL-2024-1054, indicating the vendor has not uploaded the invoice to GSTR-1.",
+    "fromCache": false
+  },
+  "60cbddd6-d493-474c-b016-c08e38a326dc": {
+    "internalInvoiceId": "60cbddd6-d493-474c-b016-c08e38a326dc",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for the invoice number SLS/2425/1055, indicating the vendor has not filed this invoice in their GSTR-1.",
+    "fromCache": false
+  },
+  "ac9627a8-e3b8-48aa-9ee4-794901050248": {
+    "internalInvoiceId": "ac9627a8-e3b8-48aa-9ee4-794901050248",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for invoice number INV/2024/1056, indicating the vendor has not filed this invoice in their GSTR-1.",
+    "fromCache": false
+  },
+  "7fa85472-4ebf-4518-baf8-ce63f5ed93fb": {
+    "internalInvoiceId": "7fa85472-4ebf-4518-baf8-ce63f5ed93fb",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for invoice number GST/24-25/1057 on the GSTR-2B portal, indicating the vendor has not filed this invoice.",
+    "fromCache": false
+  },
+  "63c74f5d-dbfd-4320-b3fc-e294203c8a6e": {
+    "internalInvoiceId": "63c74f5d-dbfd-4320-b3fc-e294203c8a6e",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for invoice TXN-89/1058, indicating the vendor has not uploaded the invoice to GSTR-1.",
+    "fromCache": false
+  },
+  "9a28d924-af2d-42e6-a358-40773784b79c": {
+    "internalInvoiceId": "9a28d924-af2d-42e6-a358-40773784b79c",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for invoice BILL-2024-1059, indicating the vendor has not filed this invoice in their GSTR-1.",
+    "fromCache": false
+  },
+  "e83b9c92-8907-47d0-a645-5e50e13bec52": {
+    "internalInvoiceId": "e83b9c92-8907-47d0-a645-5e50e13bec52",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for the given invoice number, indicating the vendor has not filed this invoice in their GSTR-1.",
+    "fromCache": false
+  },
+  "913d6563-1af0-4084-a9f1-95b9e63caf89": {
+    "internalInvoiceId": "913d6563-1af0-4084-a9f1-95b9e63caf89",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal record was found for invoice number INV/2024/1061, indicating the vendor has not filed the GSTR-1 for this transaction.",
+    "fromCache": false
+  },
+  "df0561b0-44b2-4df7-a652-a828950b85b3": {
+    "internalInvoiceId": "df0561b0-44b2-4df7-a652-a828950b85b3",
+    "category": "amount_mismatch",
+    "confidence": 1,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record, but the internal invoice amount (₹310,586.41) differs from the portal record amount (₹320,727.79).",
+    "fromCache": false
+  },
+  "707a8600-cf86-4781-aa23-cd453910c12d": {
+    "internalInvoiceId": "707a8600-cf86-4781-aa23-cd453910c12d",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for this invoice number, indicating it is missing from the GSTR-2B portal.",
+    "fromCache": false
+  },
+  "69ce8749-0899-4924-8770-439e2fcd9971": {
+    "internalInvoiceId": "69ce8749-0899-4924-8770-439e2fcd9971",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for the given invoice number, indicating it has not been filed by the vendor in GSTR-1.",
+    "fromCache": false
+  },
+  "0706de8a-236c-49f3-91f0-739ea5684abc": {
+    "internalInvoiceId": "0706de8a-236c-49f3-91f0-739ea5684abc",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching candidate portal records were found for this invoice number, indicating it is missing from the GSTR-2B portal.",
+    "fromCache": false
+  },
+  "b56c0ee1-7bb9-4392-9c36-b766f95faf05": {
+    "internalInvoiceId": "b56c0ee1-7bb9-4392-9c36-b766f95faf05",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the same invoice number and vendor GSTIN in the GSTR-2B data.",
+    "fromCache": false
+  },
+  "8830a086-7714-4bd6-ad35-f03d1432c89b": {
+    "internalInvoiceId": "8830a086-7714-4bd6-ad35-f03d1432c89b",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the exact same internal invoice number and vendor GSTIN.",
+    "fromCache": false
+  },
+  "76da0d9a-07e1-4692-914e-ee361d28a58f": {
+    "internalInvoiceId": "76da0d9a-07e1-4692-914e-ee361d28a58f",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist with identical invoice numbers and amounts for the same vendor GSTIN.",
+    "fromCache": false
+  },
+  "41f7c8da-51b2-4352-b303-ec98f06d37b8": {
+    "internalInvoiceId": "41f7c8da-51b2-4352-b303-ec98f06d37b8",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the exact same invoice number and vendor GSTIN, which constitutes a duplicate filing on the portal.",
+    "fromCache": false
+  },
+  "9105163f-7bca-4ef6-948c-b6000f07f98a": {
+    "internalInvoiceId": "9105163f-7bca-4ef6-948c-b6000f07f98a",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records were found matching the internal invoice number and vendor GSTIN.",
+    "fromCache": false
+  },
+  "cbe4e97e-92f1-47bf-bc6a-8209bca4b657": {
+    "internalInvoiceId": "cbe4e97e-92f1-47bf-bc6a-8209bca4b657",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the same invoice number and vendor GSTIN, indicating duplicate filings on the GSTR-2B portal.",
+    "fromCache": false
+  },
+  "12ef62d9-cb14-4d20-a6b7-30313a7d1c6e": {
+    "internalInvoiceId": "12ef62d9-cb14-4d20-a6b7-30313a7d1c6e",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the same invoice number and vendor GSTIN, indicating the vendor filed GSTR-1 multiple times.",
+    "fromCache": false
+  },
+  "49c072da-5fb2-43b8-96c6-22d122a21ebe": {
+    "internalInvoiceId": "49c072da-5fb2-43b8-96c6-22d122a21ebe",
+    "category": "duplicate",
+    "confidence": 1,
+    "reasoning": "Multiple candidate portal records exist for the exact same invoice number and vendor GSTIN.",
+    "fromCache": false
+  },
+  "deef11c2-43fd-42fe-8fcb-b94898313097": {
+    "internalInvoiceId": "deef11c2-43fd-42fe-8fcb-b94898313097",
+    "category": "gstin_mismatch",
+    "confidence": 0.99,
+    "reasoning": "The invoice number, total amount, and tax values match perfectly, but the vendor GSTIN on the internal invoice (36AABCB1234J1Z9) differs by one character from the portal record (36AABCB1134J1Z9).",
+    "fromCache": false
+  },
+  "dc2ea997-dbe8-45f3-94cf-86f9f7eaa566": {
+    "internalInvoiceId": "dc2ea997-dbe8-45f3-94cf-86f9f7eaa566",
+    "category": "gstin_mismatch",
+    "confidence": 0.99,
+    "reasoning": "The invoice number, total amount, and vendor name match the portal record, but the Vendor GSTIN differs slightly (27AABCM5678K1Z5 vs 27AABCM5178K1Z5).",
+    "fromCache": false
+  },
+  "334ac4ab-1619-4ef9-b33f-226307bdbc9b": {
+    "internalInvoiceId": "334ac4ab-1619-4ef9-b33f-226307bdbc9b",
+    "category": "gstin_mismatch",
+    "confidence": 0.99,
+    "reasoning": "The invoice number and amount match perfectly, but the vendor GSTIN on the internal invoice (07AABCD9012L1Z0) differs slightly from the portal record (07AABAD9012L1Z0).",
+    "fromCache": false
+  },
+  "96cd75a4-4d07-4c40-a3d3-f485c922a33c": {
+    "internalInvoiceId": "96cd75a4-4d07-4c40-a3d3-f485c922a33c",
+    "category": "gstin_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number, total amount, and tax amount match perfectly with the portal record, but there is a single-character discrepancy in the vendor GSTIN (29AABCG3456M1Z6 vs 29AABCG3456M1ZE).",
+    "fromCache": false
+  },
+  "c627a090-75ef-4f0c-aedc-15e4a15fbf2b": {
+    "internalInvoiceId": "c627a090-75ef-4f0c-aedc-15e4a15fbf2b",
+    "category": "gstin_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number, total amount, and tax amount match perfectly with the portal candidate, but the vendor GSTIN has a character difference (33AABCS7890N1Z2 vs 33ABBCS7890N1Z2).",
+    "fromCache": false
+  },
+  "37af2918-6dd7-4756-9185-602ad58954ab": {
+    "internalInvoiceId": "37af2918-6dd7-4756-9185-602ad58954ab",
+    "category": "gstin_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and amounts match precisely, but the vendor GSTIN has a single-character discrepancy (01Z8 vs 01ZE), indicating a typographical error.",
+    "fromCache": false
+  },
+  "c2c4acec-8772-466f-8f37-312a7ba402e0": {
+    "internalInvoiceId": "c2c4acec-8772-466f-8f37-312a7ba402e0",
+    "category": "gstin_mismatch",
+    "confidence": 0.98,
+    "reasoning": "The invoice number and amount match perfectly with the portal candidate, but the vendor GSTIN has a minor character discrepancy at the second-to-last position (1Z4 vs 1ZE).",
+    "fromCache": false
+  },
+  "9c3ba1b9-70a1-477f-9bff-d60aaf717fdd": {
+    "internalInvoiceId": "9c3ba1b9-70a1-477f-9bff-d60aaf717fdd",
+    "category": "gstin_mismatch",
+    "confidence": 1,
+    "reasoning": "The invoice number, total amount, and tax amount match perfectly with the portal record, but there is a single character difference in the vendor GSTIN (24AABCA1234Q1Z0 vs 24AABAA1234Q1Z0).",
+    "fromCache": false
+  },
+  "e02f08e7-4a6a-4bc3-94ab-7e125e0d3ad4": {
+    "internalInvoiceId": "e02f08e7-4a6a-4bc3-94ab-7e125e0d3ad4",
+    "category": "amount_mismatch",
+    "confidence": 1,
+    "reasoning": "The invoice number and vendor GSTIN match, but the internal invoice amount of ₹85,000 (Tax: ₹15,300) differs from the portal record amount of ₹82,000 (Tax: ₹14,760).",
+    "fromCache": false
+  },
+  "a2384fa2-81a7-4c0d-8801-8a0f4f667b27": {
+    "internalInvoiceId": "a2384fa2-81a7-4c0d-8801-8a0f4f667b27",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for the invoice number BILL-2024-9005, indicating the vendor has not filed GSTR-1 for this transaction.",
+    "fromCache": false
+  },
+  "1ae5e489-b5fe-4e98-b130-190f018e07de": {
+    "internalInvoiceId": "1ae5e489-b5fe-4e98-b130-190f018e07de",
+    "category": "amount_mismatch",
+    "confidence": 1,
+    "reasoning": "The invoice number and vendor GSTIN match the portal record, but the internal invoice amount (₹85000, Tax: ₹15300) differs from the portal record amount (₹82000, Tax: ₹14760).",
+    "fromCache": false
+  },
+  "2c3f0501-640b-4b21-baef-ebe5b2994dc8": {
+    "internalInvoiceId": "2c3f0501-640b-4b21-baef-ebe5b2994dc8",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for invoice number BILL-2024-9005, indicating the vendor has not filed GSTR-1 for this transaction.",
+    "fromCache": false
+  },
+  "38ef4150-e005-46ab-9a62-14744eff60cb": {
+    "internalInvoiceId": "38ef4150-e005-46ab-9a62-14744eff60cb",
+    "category": "amount_mismatch",
+    "confidence": 1,
+    "reasoning": "The invoice number, vendor GSTIN, and vendor name match between the internal record and the portal, but the internal amount of ₹85,000 (Tax: ₹15,300) differs from the portal amount of ₹82,000 (Tax: ₹14,760).",
+    "fromCache": false
+  },
+  "687729c5-1c93-4dc2-a824-fe1ef22b48f2": {
+    "internalInvoiceId": "687729c5-1c93-4dc2-a824-fe1ef22b48f2",
+    "category": "missing_on_portal",
+    "confidence": 1,
+    "reasoning": "No matching portal records were found for invoice BILL-2024-9005, indicating the vendor has not filed it in GSTR-1.",
+    "fromCache": false
+  }
+}

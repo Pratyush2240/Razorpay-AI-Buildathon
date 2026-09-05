@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TrueCategory {
+  exact_match
+  amount_mismatch
+  missing_on_portal
+  duplicate
+  gstin_mismatch
+}
+
+model InternalInvoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String
+  vendorGstin   String
+  vendorName    String
+  amount        Decimal       @db.Decimal(12, 2)
+  taxAmount     Decimal       @db.Decimal(12, 2)
+  invoiceDate   DateTime
+  description   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  groundTruths  GroundTruth[]
+
+  @@map("internal_invoices")
+}
+
+model PortalRecord {
+  id            String        @id @default(uuid())
+  invoiceNumber String?
+  vendorGstin   String
+  vendorName    String
+  amount        Decimal       @db.Decimal(12, 2)
+  taxAmount     Decimal       @db.Decimal(12, 2)
+  filedDate     DateTime
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  groundTruths  GroundTruth[]
+
+  @@map("portal_records")
+}
+
+model GroundTruth {
+  id                String            @id @default(uuid())
+  internalInvoiceId String?
+  portalRecordId    String?
+  trueCategory      TrueCategory
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  internalInvoice   InternalInvoice?  @relation(fields: [internalInvoiceId], references: [id], onDelete: SetNull)
+  portalRecord      PortalRecord?     @relation(fields: [portalRecordId], references: [id], onDelete: SetNull)
+
+  @@map("ground_truths")
+}
